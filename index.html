@@ -33,6 +33,19 @@
             overflow-x: hidden;
         }
 
+        /* ANIMATED BG */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Behind content but visible in margins */
+            pointer-events: none;
+        }
+
+        /* Ensure page container stays on top */
         .page-container {
             max-width: 900px;
             margin: 0 auto;
@@ -44,22 +57,7 @@
             border-right: 1px solid var(--tech-line);
             display: flex;
             flex-direction: column;
-        }
-
-        /* DECORATIVE LINES */
-        .tech-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(var(--tech-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--tech-line) 1px, transparent 1px);
-            background-size: 100px 100px;
-            opacity: 0.6;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 1;
         }
 
         /* HEADER */
@@ -481,7 +479,7 @@
 
 <body>
 
-    <div class="tech-grid"></div>
+    <canvas id="bg-canvas"></canvas>
 
     <div class="page-container">
         <header>
@@ -517,7 +515,7 @@
             </div>
             <div class="status-item">
                 <span class="status-label">Stack</span>
-                <span class="status-value">NEXT.JS / SUPABASE</span>
+                <span class="status-value">REACT+VITE / SUPABASE</span>
             </div>
             <div class="status-item">
                 <span class="status-label">Status</span>
@@ -542,6 +540,9 @@
                     <li>UX/UI Reactivo & Animado</li>
                     <li>Catálogo Filtrable</li>
                     <li>Checkout Optimizado</li>
+                    <li>Carrito de Compras</li>
+                    <li>Detalle de producto con</li>
+                    <li>Proceso de compra (Checkout)</li>
                 </ul>
             </div>
             <div class="card">
@@ -549,17 +550,19 @@
                 <h3>Admin Console</h3>
                 <ul>
                     <li>CRUD Productos/Stock</li>
-                    <li>Gestión de Assets</li>
+                    <li>Gestión de inventario</li>
                     <li>Control de Variantes</li>
+                    <li>Editar productos existentes</li>
+                    <li>Eliminar productos</li>
                 </ul>
             </div>
             <div class="card">
                 <span class="price-tag">$4,500</span>
-                <h3>Data Analytics</h3>
+                <h3>dashboard de pedidos</h3>
                 <ul>
-                    <li>Métricas en Tiempo Real</li>
+                    <li>Control basico de pedidos</li>
                     <li>Historial de Pedidos</li>
-                    <li>KPIs de Venta</li>
+                    <li>Reportes de ventas</li>
                 </ul>
             </div>
             <div class="card">
@@ -657,6 +660,88 @@
         </footer>
 
     </div>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Configuration
+        const particleCount = 60; // Density
+        const connectionDistance = 150;
+        const particleSpeed = 0.5;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * particleSpeed;
+                this.vy = (Math.random() - 0.5) * particleSpeed;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Black dots
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            resize();
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            animate();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Update and draw particles
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Draw connections
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 0, 0, ${1 - distance / connectionDistance})`; // Fade out
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        init();
+    </script>
 
 </body>
 
