@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Propuesta Pluma Negra</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&family=JetBrains+Mono:wght@300;400;700&display=swap');
+
+        :root {
+            --bg: #ffffff;
+            --card-bg: #f8f8f8;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --accent: #000000;
+            --border: #e0e0e0;
+            --tech-line: #eeeeee;
+            --highlight: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 0;
+            margin: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px;
+            position: relative;
+            background: var(--bg);
+            min-height: 100vh;
+            border-left: 1px solid var(--tech-line);
+            border-right: 1px solid var(--tech-line);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* DECORATIVE LINES */
+        .tech-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--tech-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--tech-line) 1px, transparent 1px);
+            background-size: 100px 100px;
+            opacity: 0.6;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* HEADER */
+        header {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .logo-img {
+            height: 120px;
+            /* Removed invert filter for Light Mode */
+            margin-bottom: 20px;
+            display: block;
+            mix-blend-mode: multiply;
+            /* Helps integrate with white bg if it has white bg */
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 32px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin: 0;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            border-left: 1px solid var(--border);
+            padding-left: 20px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header-right span {
+            display: block;
+        }
+
+        .header-right strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* SYSTEM STATUS BAR (META) */
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-item {
+            padding: 15px;
+            border-right: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .status-item:last-child {
+            border-right: none;
+        }
+
+        .status-label {
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        .status-value {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* SECTIONS */
+        h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--accent);
+            margin-top: 60px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            margin-right: 15px;
+        }
+
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin-left: 15px;
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #444;
+            max-width: 700px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* GRID CARDS */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.3s ease;
+        }
+
+        .card:hover::before {
+            height: 100%;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .card ul {
+            margin: 20px 0 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .card li {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .card li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* TABLE */
+        .table-container {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            color: #333;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td:last-child {
+            text-align: right;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .total-row td {
+            background: #f0f0f0;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 14px;
+            border-top: 2px solid var(--accent);
+        }
+
+        /* TIMELINE */
+        .timeline-container {
+            margin-top: 40px;
+            position: relative;
+            z-index: 2;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            height: 1px;
+            background: var(--border);
+            position: relative;
+            top: 15px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .timeline-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step {
+            text-align: center;
+            background: var(--bg);
+            padding: 0 10px;
+        }
+
+        .step-dot {
+            width: 30px;
+            height: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .step-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* FOOTER */
+        .footer-spacer {
+            flex: 1;
+        }
+
+        footer {
+            margin-top: 100px;
+            border-top: 2px solid var(--accent);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            z-index: 2;
+            padding-bottom: 20px;
+        }
+
+        .footer-brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .footer-brand span {
+            display: block;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        .footer-dev {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dev-info {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .dev-info strong {
+            display: block;
+            color: var(--accent);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .raven-footer {
+            width: 100px;
+            opacity: 0.8;
+            mix-blend-mode: multiply;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background-color: #fff !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .page-container {
+                border: none;
+                padding: 0;
+                width: 100%;
+                max-width: none;
+            }
+
+            /* Force breaks if needed */
+            h2 {
+                page-break-before: auto;
+            }
+
+            .card,
+            .table-container {
+                page-break-inside: avoid;
+            }
+
+            footer {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tech-grid"></div>
+
+    <div class="page-container">
+        <header>
+            <div class="header-left">
+                <img src="pluma circuitosdentropluma.png" alt="Logo" class="logo-img">
+                <h1>Propuesta<br>Técnica</h1>
+                <div class="subtitle">PROJECT: PLUMA NEGRA // V.1.0</div>
+            </div>
+            <div class="header-right">
+                <div>
+                    <span>CLIENTE</span>
+                    <strong>H. DE HELENA</strong>
+                </div>
+                <div>
+                    <span>FECHA</span>
+                    <strong>28.11.2025</strong>
+                </div>
+                <div>
+                    <span>ID</span>
+                    <strong>#PN-2025-X</strong>
+                </div>
+            </div>
+        </header>
+
+        <div class="system-status">
+            <div class="status-item">
+                <span class="status-label">Presupuesto</span>
+                <span class="status-value">$26,000 MXN</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Tiempo Est.</span>
+                <span class="status-value">4 SEMANAS</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Stack</span>
+                <span class="status-value">NEXT.JS / SUPABASE</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Status</span>
+                <span class="status-value">PENDIENTE</span>
+            </div>
+        </div>
+
+        <h2>01 // INICIALIZACIÓN</h2>
+        <p>
+            Ejecución de una plataforma de comercio electrónico de alto rendimiento.
+            El sistema fusiona una interfaz de usuario minimalista y vanguardista con una arquitectura de backend
+            robusta,
+            diseñada para la escalabilidad y la gestión eficiente de inventarios en tiempo real.
+        </p>
+
+        <h2>02 // MÓDULOS DEL SISTEMA</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="price-tag">$6,000</span>
+                <h3>Frontend Core</h3>
+                <ul>
+                    <li>UX/UI Reactivo & Animado</li>
+                    <li>Catálogo Filtrable</li>
+                    <li>Checkout Optimizado</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="price-tag">$7,000</span>
+                <h3>Admin Console</h3>
+                <ul>
+                    <li>CRUD Productos/Stock</li>
+                    <li>Gestión de Assets</li>
+                    <li>Control de Variantes</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="price-tag">$4,500</span>
+                <h3>Data Analytics</h3>
+                <ul>
+                    <li>Métricas en Tiempo Real</li>
+                    <li>Historial de Pedidos</li>
+                    <li>KPIs de Venta</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="price-tag">$8,500</span>
+                <h3>Infrastructure</h3>
+                <ul>
+                    <li>Stripe Payment Gateway</li>
+                    <li>Supabase Database</li>
+                    <li>Auth & Security Layers</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>03 // DESGLOSE DE INVERSIÓN</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Módulo</th>
+                        <th>Detalle</th>
+                        <th>Costo (MXN)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FRONTEND</td>
+                        <td>Desarrollo de interfaz y experiencia de usuario</td>
+                        <td>$6,000</td>
+                    </tr>
+                    <tr>
+                        <td>BACKOFFICE</td>
+                        <td>Panel administrativo y gestión de contenido</td>
+                        <td>$7,000</td>
+                    </tr>
+                    <tr>
+                        <td>DASHBOARD</td>
+                        <td>Visualización de datos y métricas</td>
+                        <td>$4,500</td>
+                    </tr>
+                    <tr>
+                        <td>BACKEND</td>
+                        <td>Integraciones, Base de Datos y Seguridad</td>
+                        <td>$7,500</td>
+                    </tr>
+                    <tr>
+                        <td>DEPLOY</td>
+                        <td>Testing, QA y Puesta en Producción</td>
+                        <td>$1,000</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2">TOTAL ESTIMADO</td>
+                        <td>$26,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>04 // CRONOGRAMA DE EJECUCIÓN</h2>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-steps">
+                <div class="step">
+                    <div class="step-dot">01</div>
+                    <div class="step-label">Diseño & DB</div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">02</div>
+                    <div class="step-label">Admin Panel</div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">03</div>
+                    <div class="step-label">Tienda Core</div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">04</div>
+                    <div class="step-label">QA & Launch</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-spacer"></div>
+
+        <footer>
+            <div class="footer-brand">
+                GENERATED BY DATS
+                <span>DIGITAL ARCHITECTURE & TECH SOLUTIONS</span>
+            </div>
+            <div class="footer-dev">
+                <div class="dev-info">
+                    <strong>ARTURO TIRADO</strong>
+                    WEB DEVELOPER
+                </div>
+                <img src="cuervo circuitos.png" class="raven-footer">
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+
+</html>
